@@ -26,24 +26,36 @@ export function ProductCard({ product, subdomain }: Props) {
   }
 
   return (
-    <Link href={`/${subdomain}/product/${product.id}`} className="block group" onClick={handleClick}>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Link
+      href={`/${subdomain}/product/${product.id}`}
+      className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 rounded-lg"
+      onClick={handleClick}
+      aria-label={`View ${product.name} - $${product.price}`}
+    >
+      <Card className="overflow-hidden hover:shadow-lg transition-all duration-200 group-hover:-translate-y-1">
         <div className="aspect-square bg-zinc-100 relative overflow-hidden">
           {product.image_urls?.[0] ? (
             <img
               src={product.image_urls[0]}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              alt={`${product.name} product image`}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-zinc-400">
-              No Image
+            <div className="w-full h-full flex items-center justify-center text-zinc-400" aria-label="No product image available">
+              <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
           )}
         </div>
-        <div className="p-4">
-          <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-          <div className="text-xl font-bold">${product.price}</div>
+        <div className="p-4 sm:p-6">
+          <h3 className="font-semibold text-lg mb-2 text-zinc-900 group-hover:text-zinc-700 transition-colors">
+            {product.name}
+          </h3>
+          <div className="text-xl font-bold text-zinc-900">
+            ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price}
+          </div>
         </div>
       </Card>
     </Link>

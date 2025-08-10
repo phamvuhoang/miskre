@@ -6,7 +6,8 @@ export class ResendProvider implements EmailProvider {
   async send(payload: EmailPayload) {
     const { Resend } = await import('resend');
     const client = new Resend(this.apiKey);
-    const res = await client.emails.send({ from: 'no-reply@miskre.com', ...payload });
+    const domain = process.env.DOMAIN || 'miskre.com';
+    const res = await client.emails.send({ from: `no-reply@${domain}`, ...payload });
     return { id: (res as any)?.id };
   }
 }
