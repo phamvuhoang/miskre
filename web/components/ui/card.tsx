@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type CardProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function Card({ className, ...props }: CardProps) {
   return (
     <div
       className={cn(
         'rounded-lg border border-zinc-200 bg-white shadow-sm transition-shadow',
-        'focus-within:ring-2 focus-within:ring-zinc-950 focus-within:ring-offset-2',
+        'focus-within:ring-2 focus-within:ring-[var(--seller-primary,_#000)] focus-within:ring-offset-2',
         className
       )}
       {...props}

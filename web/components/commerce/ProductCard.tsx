@@ -13,7 +13,7 @@ type Product = {
 type Props = {
   product: Product;
   subdomain: string;
-  seller?: any;
+  seller?: { colors?: { primary?: string; accent?: string } } | null;
 };
 
 export function ProductCard({ product, subdomain, seller }: Props) {
@@ -50,6 +50,8 @@ export function ProductCard({ product, subdomain, seller }: Props) {
               alt={`${product.name} product image`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loading="lazy"
+              width={400}
+              height={400}
             />
           ) : (
             <div

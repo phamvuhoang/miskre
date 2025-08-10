@@ -22,7 +22,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     return (
       <main className="container mx-auto p-6">
         <h1 className="text-2xl font-bold mb-4">Seller Not Found</h1>
-        <p>The seller "{subdomain}" was not found.</p>
+        <p>The seller &quot;{subdomain}&quot; was not found.</p>
       </main>
     );
   }
@@ -92,10 +92,12 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               <Card key={product.id} className="overflow-hidden">
                 <div className="aspect-square bg-zinc-100 relative">
                   {product.image_urls && product.image_urls.length > 0 ? (
-                    <img 
-                      src={product.image_urls[0]} 
+                    <img
+                      src={product.image_urls[0]}
                       alt={product.name}
                       className="w-full h-full object-cover"
+                      width={400}
+                      height={400}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-zinc-400">

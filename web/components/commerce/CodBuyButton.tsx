@@ -27,8 +27,9 @@ export function CodBuyButton({ sellerId, total }: Props) {
       if (!res.ok) throw new Error(data.error || 'Failed');
       trackEvent('purchase', { seller_id: sellerId, total, payment_method: 'cod', order_id: data.order.id });
       setStatus(`Order placed (COD). Order ID: ${data.order.id}`);
-    } catch (e: any) {
-      setStatus(`Error: ${e.message}`);
+    } catch (e) {
+      const err = e as Error;
+      setStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }

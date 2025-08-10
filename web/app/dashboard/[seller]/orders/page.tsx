@@ -2,6 +2,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { OrderActions } from '@/components/dashboard/OrderActions';
 
 type OrdersPageProps = {
   params: Promise<{ seller: string }>;
@@ -22,7 +23,7 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
     return (
       <main className="container mx-auto p-6">
         <h1 className="text-2xl font-bold mb-4">Seller Not Found</h1>
-        <p>The seller "{subdomain}" was not found.</p>
+        <p>The seller &quot;{subdomain}&quot; was not found.</p>
       </main>
     );
   }
@@ -155,14 +156,8 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
                       </td>
                       <td className="p-4">
                         <div className="flex gap-2">
-                          {order.status === 'pending' && (
-                            <Button size="sm" variant="outline">
-                              Mark Shipped
-                            </Button>
-                          )}
-                          <Button size="sm" variant="ghost">
-                            View
-                          </Button>
+                          {/* Client actions for status updates */}
+                          <OrderActions orderId={order.id} status={order.status} />
                         </div>
                       </td>
                     </tr>

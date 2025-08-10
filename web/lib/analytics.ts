@@ -12,9 +12,9 @@ export function initPostHog() {
   }
 }
 
-export function trackEvent(event: string, properties?: Record<string, any>) {
+export function trackEvent(event: string, properties?: Record<string, string | number | boolean>) {
   if (typeof window !== 'undefined') {
-    posthog.capture(event, properties);
+    posthog.capture(event, properties as Record<string, string | number | boolean>);
   }
 }
 

@@ -81,13 +81,7 @@ export default function EditProductPage({ params }: EditProductPageProps) {
     }));
   };
 
-  const handleCategoryChange = (category: string) => {
-    setForm(prev => ({
-      ...prev,
-      category,
-      sizes: SKUGenerator.getDefaultSizes(category)
-    }));
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,8 +116,9 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         window.location.href = `/dashboard/${subdomain}/products`;
       }, 1500);
       
-    } catch (error: any) {
-      setStatus(`Error: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      setStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -154,8 +149,9 @@ export default function EditProductPage({ params }: EditProductPageProps) {
         window.location.href = `/dashboard/${subdomain}/products`;
       }, 1500);
       
-    } catch (error: any) {
-      setStatus(`Error: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      setStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }

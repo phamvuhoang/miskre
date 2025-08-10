@@ -32,10 +32,11 @@ export async function POST(req: NextRequest) {
       message: 'Image uploaded successfully'
     });
 
-  } catch (error: any) {
-    console.error('Upload error:', error);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Upload error:', err);
     return NextResponse.json(
-      { error: error.message || 'Failed to upload image' }, 
+      { error: err.message || 'Failed to upload image' },
       { status: 500 }
     );
   }
@@ -57,10 +58,11 @@ export async function DELETE(req: NextRequest) {
       message: 'Image deleted successfully'
     });
 
-  } catch (error: any) {
-    console.error('Delete error:', error);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Delete error:', err);
     return NextResponse.json(
-      { error: error.message || 'Failed to delete image' }, 
+      { error: err.message || 'Failed to delete image' },
       { status: 500 }
     );
   }

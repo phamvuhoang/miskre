@@ -1,5 +1,5 @@
 interface FooterProps {
-  seller?: any;
+  seller?: { name?: string; colors?: { primary?: string; secondary?: string } } | null;
 }
 
 export function Footer({ seller }: FooterProps = {}) {

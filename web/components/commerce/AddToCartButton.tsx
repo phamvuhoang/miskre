@@ -42,7 +42,7 @@ export function AddToCartButton({ product, subdomain }: Props) {
         product_name: product.name,
         price: product.price,
         quantity,
-        size: selectedSize || undefined,
+        size: selectedSize || '',
         subdomain,
       });
 

@@ -90,7 +90,8 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ seller: data });
 }
 
-function generateLaunchKitEmail(seller: any): string {
+type SellerEmailData = { name: string; subdomain: string };
+function generateLaunchKitEmail(seller: SellerEmailData): string {
   const domain = process.env.DOMAIN || 'miskre.com';
   const storeUrl = buildStoreUrl(seller.subdomain);
   const dashboardUrl = buildDashboardUrl(seller.subdomain);
@@ -115,7 +116,7 @@ function generateLaunchKitEmail(seller: any): string {
     <body>
       <div class="header">
         <h1>🎉 Welcome to MISKRE!</h1>
-        <p>Your store "${seller.name}" is now live and ready for customers</p>
+        <p>Your store &quot;${seller.name}&quot; is now live and ready for customers</p>
       </div>
 
       <div class="content">
@@ -148,7 +149,7 @@ function generateLaunchKitEmail(seller: any): string {
         </ul>
 
         <h2>🆘 Need Help?</h2>
-        <p>We're here to support you every step of the way:</p>
+        <p>We&apos;re here to support you every step of the way:</p>
         <ul>
           <li>📧 Email: ${process.env.SUPPORT_EMAIL || 'support@miskre.com'}</li>
           <li>📚 Help Center: <a href="https://${domain}/help">${domain}/help</a></li>

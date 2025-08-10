@@ -1,3 +1,5 @@
+import Stripe from 'stripe';
+
 export interface CheckoutPayload {
   amount: number;
   currency: 'usd';
@@ -13,8 +15,6 @@ export interface PaymentProvider {
 export class StripeProvider implements PaymentProvider {
   private stripe: import('stripe').Stripe;
   constructor(apiKey: string) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const Stripe = require('stripe').default;
     this.stripe = new Stripe(apiKey, { apiVersion: '2023-10-16' });
   }
   async createCheckoutSession(p: CheckoutPayload) {

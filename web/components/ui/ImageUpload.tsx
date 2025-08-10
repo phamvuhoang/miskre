@@ -91,9 +91,10 @@ export function ImageUpload({
         await updateProductImages(productId, updatedImages);
       }
 
-    } catch (error: any) {
-      console.error('Upload error:', error);
-      alert(`Upload failed: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      console.error('Upload error:', err);
+      alert(`Upload failed: ${err.message}`);
     } finally {
       setUploading(false);
     }
@@ -120,9 +121,10 @@ export function ImageUpload({
         await updateProductImages(productId, updatedImages);
       }
 
-    } catch (error: any) {
-      console.error('Delete error:', error);
-      alert(`Delete failed: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      console.error('Delete error:', err);
+      alert(`Delete failed: ${err.message}`);
     }
   };
 
@@ -161,6 +163,7 @@ export function ImageUpload({
                   src={imageUrl}
                   alt={`Product image ${index + 1}`}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <button

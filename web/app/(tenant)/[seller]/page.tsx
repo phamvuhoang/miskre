@@ -3,18 +3,18 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/commerce/ProductCard';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
-import { createSellerTheme } from '@/lib/theme';
+import Image from 'next/image';
 
 export default async function Storefront({ params }: { params: Promise<{ seller: string }> }) {
   const supabase = supabaseServer();
   const { seller: sub } = await params;
   const { data: seller } = await supabase.from('sellers').select('*').eq('subdomain', sub).maybeSingle();
+  type ProductSummary = { id: string; name: string; price: number; image_urls?: string[] };
   const { data: products } = seller
     ? await supabase.from('products').select('*').eq('seller_id', seller.id)
-    : { data: [] as any } as any;
+    : { data: [] as ProductSummary[] } as { data: ProductSummary[] };
 
-  // Create theme for this seller
-  const theme = seller ? createSellerTheme(seller) : null;
+  // Theme is applied via ThemeProvider and seller colors
   const heroPhrase = seller?.phrases?.[0] || "Premium gear for fighters, coaches, and fans";
 
   return (
@@ -32,10 +32,12 @@ export default async function Storefront({ params }: { params: Promise<{ seller:
             <div className="text-center max-w-4xl mx-auto">
               {seller?.logo_url && (
                 <div className="mb-8">
-                  <img
+                  <Image
                     src={seller.logo_url}
                     alt={`${seller.name} logo`}
                     className="w-24 h-24 lg:w-32 lg:h-32 mx-auto object-contain rounded-lg"
+                    width={128}
+                    height={128}
                   />
                 </div>
               )}
@@ -43,7 +45,7 @@ export default async function Storefront({ params }: { params: Promise<{ seller:
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style={{
                 color: seller?.colors?.primary || '#111827'
               }}>
-                {seller?.name ? `${seller.name}'s Store` : 'Store'}
+                {seller?.name ? `${seller.name}&apos;s Store` : 'Store'}
               </h1>
 
               <p className="text-xl lg:text-2xl text-zinc-600 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -84,7 +86,7 @@ export default async function Storefront({ params }: { params: Promise<{ seller:
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                {products.map((p: any) => (
+                {products.map((p) => (
                   <ProductCard key={p.id} product={p} subdomain={sub} seller={seller} />
                 ))}
               </div>
@@ -116,7 +118,7 @@ export default async function Storefront({ params }: { params: Promise<{ seller:
                   New Products Coming Soon
                 </h2>
                 <p className="text-zinc-600 mb-6">
-                  We're preparing an exclusive collection just for you. Check back soon!
+                  We&apos;re preparing an exclusive collection just for you. Check back soon!
                 </p>
                 {seller?.phrases?.[0] && (
                   <p className="text-sm font-medium" style={{ color: seller?.colors?.accent || '#ef4444' }}>

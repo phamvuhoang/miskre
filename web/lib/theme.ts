@@ -28,6 +28,12 @@ export function generateThemeCSS(seller: SellerData): string {
     accent: '#ef4444'
   };
 
+  const contrast = {
+    primary: getContrastColor(colors.primary),
+    secondary: getContrastColor(colors.secondary),
+    accent: getContrastColor(colors.accent),
+  };
+
   return `
     :root {
       --seller-primary: ${colors.primary};
@@ -36,6 +42,9 @@ export function generateThemeCSS(seller: SellerData): string {
       --seller-primary-rgb: ${hexToRgb(colors.primary)};
       --seller-secondary-rgb: ${hexToRgb(colors.secondary)};
       --seller-accent-rgb: ${hexToRgb(colors.accent)};
+      --seller-primary-contrast: ${contrast.primary};
+      --seller-secondary-contrast: ${contrast.secondary};
+      --seller-accent-contrast: ${contrast.accent};
     }
   `;
 }

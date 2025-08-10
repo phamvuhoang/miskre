@@ -8,10 +8,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const buttonVariants = {
   variant: {
-    default: 'bg-black text-white hover:bg-zinc-800 focus-visible:outline-black',
-    outline: 'border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50 focus-visible:outline-zinc-900',
-    ghost: 'bg-transparent text-zinc-900 hover:bg-zinc-100 focus-visible:outline-zinc-900',
-    destructive: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',
+    default: 'bg-[var(--seller-primary,_#000)] text-[var(--seller-primary-contrast,_#fff)] hover:bg-[color-mix(in_oklab,var(--seller-primary,_#000),#000_10%)] focus-visible:outline-[var(--seller-primary,_#000)]',
+    outline: 'border border-zinc-300 bg-white text-[var(--seller-primary,_#111827)] hover:bg-zinc-50 focus-visible:outline-[var(--seller-primary,_#111827)]',
+    ghost: 'bg-transparent text-[var(--seller-primary,_#111827)] hover:bg-zinc-100 focus-visible:outline-[var(--seller-primary,_#111827)]',
+    destructive: 'bg-[var(--seller-accent,_#ef4444)] text-[var(--seller-accent-contrast,_#fff)] hover:bg-[color-mix(in_oklab,var(--seller-accent,_#ef4444),#000_10%)] focus-visible:outline-[var(--seller-accent,_#ef4444)]',
   },
   size: {
     sm: 'px-3 py-1.5 text-xs',

@@ -22,7 +22,7 @@ export default async function SellerDashboard({ params }: DashboardProps) {
     return (
       <main className="container mx-auto p-6">
         <h1 className="text-2xl font-bold mb-4">Seller Not Found</h1>
-        <p>The seller "{subdomain}" was not found.</p>
+        <p>The seller &quot;{subdomain}&quot; was not found.</p>
       </main>
     );
   }
@@ -140,10 +140,12 @@ export default async function SellerDashboard({ params }: DashboardProps) {
                   <div key={product.id} className="flex items-center gap-3 p-3 bg-zinc-50 rounded">
                     <div className="w-12 h-12 bg-zinc-200 rounded overflow-hidden flex-shrink-0">
                       {product.image_urls?.[0] ? (
-                        <img 
-                          src={product.image_urls[0]} 
+                        <img
+                          src={product.image_urls[0]}
                           alt={product.name}
                           className="w-full h-full object-cover"
+                          width={48}
+                          height={48}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">

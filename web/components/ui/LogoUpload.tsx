@@ -46,9 +46,10 @@ export function LogoUpload({ onUpload, currentImage, className = "w-32 h-32" }: 
       }
 
       onUpload(data.imageUrl);
-    } catch (error: any) {
-      console.error('Upload error:', error);
-      alert(`Upload failed: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      console.error('Upload error:', err);
+      alert(`Upload failed: ${err.message}`);
     } finally {
       setUploading(false);
     }
@@ -83,6 +84,8 @@ export function LogoUpload({ onUpload, currentImage, className = "w-32 h-32" }: 
               src={currentImage}
               alt="Logo preview"
               className="w-full h-full object-cover"
+              width={128}
+              height={128}
             />
           </div>
           <button

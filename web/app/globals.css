@@ -17,8 +17,18 @@
 
   /* Focus styles for accessibility */
   *:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid var(--seller-primary, #111827);
     outline-offset: 2px;
+  }
+
+  /* Safe default theme variables so CSS variables always resolve */
+  :root {
+    --seller-primary: #111827; /* zinc-900 */
+    --seller-secondary: #ffffff;
+    --seller-accent: #ef4444; /* red-500 */
+    --seller-primary-contrast: #ffffff;
+    --seller-secondary-contrast: #111827;
+    --seller-accent-contrast: #ffffff;
   }
 }
 

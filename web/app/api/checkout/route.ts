@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   const { data: seller } = await supabase.from('sellers').select('payment_provider').eq('id', sellerId).single();
 
-  let provider: PaymentProvider = seller?.payment_provider === 'cod'
+  const provider: PaymentProvider = seller?.payment_provider === 'cod'
     ? new CODProvider()
     : new StripeProvider(process.env.STRIPE_API_KEY!);
 
@@ -19,6 +19,6 @@ export async function POST(req: NextRequest) {
     metadata: { sellerId },
   });
 
-  return NextResponse.json({ sessionId: session.id, url: (session as any).url });
+  return NextResponse.json({ sessionId: session.id, url: (session as { url?: string }).url });
 }
 

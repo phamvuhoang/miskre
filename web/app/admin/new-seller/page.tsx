@@ -34,7 +34,7 @@ export default function NewSeller() {
   const [status, setStatus] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const updateForm = (field: keyof SellerForm, value: any) => {
+  const updateForm = <K extends keyof SellerForm>(field: K, value: SellerForm[K]) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 

@@ -98,8 +98,9 @@ export default function NewProductPage({ params }: NewProductPageProps) {
         window.location.href = `/dashboard/${subdomain}/products`;
       }, 1500);
       
-    } catch (error: any) {
-      setStatus(`Error: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      setStatus(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { trackEvent } from '@/lib/analytics';
+import type { SellerData } from '@/lib/theme';
+import Image from 'next/image';
 
 type CartItem = {
   id: string;
@@ -22,7 +24,7 @@ type CartPageProps = {
 
 export default function CartPage({ params }: CartPageProps) {
   const [seller, setSeller] = useState<string>('');
-  const [sellerData, setSellerData] = useState<any>(null);
+  const [sellerData, setSellerData] = useState<SellerData | null>(null);
   const [sellerId, setSellerId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -135,9 +137,10 @@ export default function CartPage({ params }: CartPageProps) {
           window.location.href = data.url;
         }
       }
-    } catch (error: any) {
-      console.error('Checkout error:', error);
-      alert(`Checkout failed: ${error.message}`);
+    } catch (error) {
+      const err = error as Error;
+      console.error('Checkout error:', err);
+      alert(`Checkout failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -193,10 +196,12 @@ export default function CartPage({ params }: CartPageProps) {
                 <div className="flex gap-4">
                   <div className="w-20 h-20 bg-zinc-100 rounded overflow-hidden flex-shrink-0">
                     {item.image_urls?.[0] ? (
-                      <img 
-                        src={item.image_urls[0]} 
+                      <Image
+                        src={item.image_urls[0]}
                         alt={item.name}
                         className="w-full h-full object-cover"
+                        width={80}
+                        height={80}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">

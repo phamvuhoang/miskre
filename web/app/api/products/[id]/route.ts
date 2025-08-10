@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -34,12 +34,12 @@ export async function PUT(
   const supabase = supabaseServer();
   
   // Build update object with only provided fields
-  const updateData: any = {};
-  if (body.name !== undefined) updateData.name = body.name;
-  if (body.description !== undefined) updateData.description = body.description ?? null;
-  if (body.price !== undefined) updateData.price = body.price;
-  if (body.sizes !== undefined) updateData.sizes = body.sizes ?? null;
-  if (body.image_urls !== undefined) updateData.image_urls = body.image_urls ?? null;
+  const updateData: Partial<{ name: string; description: string | null; price: number; sizes: string[] | null; image_urls: string[] | null; is_limited: boolean }> = {};
+  if (body.name !== undefined) updateData.name = body.name as string;
+  if (body.description !== undefined) updateData.description = (body.description as string) ?? null;
+  if (body.price !== undefined) updateData.price = Number(body.price);
+  if (body.sizes !== undefined) updateData.sizes = (body.sizes as string[]) ?? null;
+  if (body.image_urls !== undefined) updateData.image_urls = (body.image_urls as string[]) ?? null;
   if (body.is_limited !== undefined) updateData.is_limited = !!body.is_limited;
 
   const { data, error } = await supabase
@@ -57,7 +57,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;

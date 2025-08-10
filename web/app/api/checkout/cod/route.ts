@@ -4,11 +4,11 @@ import { ResendProvider } from '@/lib/providers/email';
 
 // COD checkout: create a pending order directly without Stripe
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const body = await req.json() as { seller_id: string; total: number; customer_email?: string };
   const supabase = supabaseServer();
   const { data, error } = await supabase.from('orders').insert({
     seller_id: body.seller_id,
-    customer_email_enc: body.customer_email_enc ?? null,
+    customer_email_enc: body.customer_email ?? null,
     status: 'pending',
     payment_method: 'cod',
     total: body.total ?? 0,

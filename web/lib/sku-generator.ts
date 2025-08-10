@@ -103,13 +103,16 @@ export class SKUGenerator {
     return variations.length > 0 ? variations : [baseProduct];
   }
 
-  async createProductsForSeller(sellerId: string, supabase: any): Promise<any[]> {
+  async createProductsForSeller(
+    sellerId: string,
+    supabase: { from: (table: 'products') => { insert: (row: Record<string, unknown>) => { select: (cols: string) => { single: () => unknown } } } }
+  ): Promise<Record<string, unknown>[]> {
     const products = this.generateDefaultProducts();
-    const createdProducts: any[] = [];
+    const createdProducts: Record<string, unknown>[] = [];
 
     for (const product of products) {
       try {
-        const { data, error } = await supabase.from('products').insert({
+        const result = await supabase.from('products').insert({
           seller_id: sellerId,
           name: product.name,
           description: product.description,
@@ -117,9 +120,10 @@ export class SKUGenerator {
           sizes: product.sizes,
           image_urls: [], // Will be populated when images are uploaded
           is_limited: product.is_limited,
-        }).select('*').single();
+        }).select('*').single() as { data: Record<string, unknown> | null; error: { message: string } | null };
+        const { data, error } = result;
 
-        if (error) {
+        if (error || !data) {
           console.error(`Failed to create product ${product.name}:`, error);
         } else {
           createdProducts.push(data);

@@ -27,6 +27,8 @@ export default async function PDP({ params }: { params: Promise<{ seller: string
                   alt={`${product.name} product image`}
                   className="w-full h-full object-cover"
                   loading="eager"
+                  width={800}
+                  height={800}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-zinc-400" aria-label="No product image available">
@@ -74,17 +76,19 @@ export default async function PDP({ params }: { params: Promise<{ seller: string
                 </button>
               </div>
 
-              <AddToCartButton
-                product={{
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  image_urls: product.image_urls,
-                  seller_id: product.seller_id,
-                  sizes: product.sizes
-                }}
-                subdomain={sub}
-              />
+              <div id="purchase">
+                <AddToCartButton
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image_urls: product.image_urls,
+                    seller_id: product.seller_id,
+                    sizes: product.sizes
+                  }}
+                  subdomain={sub}
+                />
+              </div>
 
               <div className="bg-zinc-50 p-4 rounded-lg">
                 <div className="flex items-center gap-2 text-sm text-zinc-600 mb-2">
@@ -104,6 +108,15 @@ export default async function PDP({ params }: { params: Promise<{ seller: string
           </div>
         </div>
       </main>
+      {/* Sticky mobile CTA bar */}
+      <div className="lg:hidden sticky bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t p-4">
+        <div className="container flex items-center justify-between">
+          <div className="font-bold text-lg">${typeof product.price === 'number' ? product.price.toFixed(2) : product.price}</div>
+          <a href="#purchase" aria-label="Scroll to purchase options" className="inline-flex items-center justify-center rounded-md px-4 py-3 font-medium shadow-sm transition-colors bg-[var(--seller-accent,_#ef4444)] text-[var(--seller-accent-contrast,_#fff)]">
+            Add to Cart
+          </a>
+        </div>
+      </div>
       <Footer />
     </div>
   );

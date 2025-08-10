@@ -6,7 +6,7 @@ import { CartManager } from '@/lib/cart';
 type Props = {
   storeName?: string;
   subdomain?: string;
-  seller?: any;
+  seller?: { name?: string; logo_url?: string; colors?: { primary?: string; secondary?: string; accent?: string } } | null;
 };
 
 export function Header({ storeName, subdomain, seller }: Props) {
@@ -57,8 +57,10 @@ export function Header({ storeName, subdomain, seller }: Props) {
           {seller?.logo_url && (
             <img
               src={seller.logo_url}
-              alt={`${seller.name} logo`}
+              alt={`${seller?.name ?? 'Store'} logo`}
               className="w-8 h-8 object-contain"
+              width={32}
+              height={32}
             />
           )}
           <span className="text-xl font-bold" style={logoTextStyle}>

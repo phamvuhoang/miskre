@@ -11,9 +11,10 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, process.env.STRIPE_WEBHOOK_SECRET!);
-  } catch (e: any) {
-    console.error('Webhook signature verification failed:', e.message);
-    return new NextResponse(`Webhook Error: ${e.message}`, { status: 400 });
+  } catch (e) {
+    const err = e as Error;
+    console.error('Webhook signature verification failed:', err.message);
+    return new NextResponse(`Webhook Error: ${err.message}` as unknown as BodyInit, { status: 400 });
   }
 
   const supabase = supabaseServer();
