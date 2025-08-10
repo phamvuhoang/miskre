@@ -52,7 +52,7 @@ export default async function Storefront({ params }: { params: Promise<{ seller:
 
               {seller?.phrases && seller.phrases.length > 1 && (
                 <div className="flex flex-wrap justify-center gap-3 mb-8">
-                  {seller.phrases.slice(1).map((phrase, index) => (
+                  {seller.phrases.slice(1).map((phrase : string, index : number) => (
                     <span
                       key={index}
                       className="px-4 py-2 rounded-full text-sm font-medium border"
