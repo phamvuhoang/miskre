@@ -29,16 +29,40 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const supabase = supabaseServer();
+
+  // Validate required fields
+  if (!body.name || !body.subdomain || !body.contact_email) {
+    return NextResponse.json({ error: 'Name, subdomain, and contact email are required' }, { status: 400 });
+  }
+
+  // Clean and validate subdomain
+  const cleanSubdomain = body.subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  if (cleanSubdomain !== body.subdomain) {
+    return NextResponse.json({ error: 'Subdomain can only contain lowercase letters, numbers, and hyphens' }, { status: 400 });
+  }
+
+  // Check if subdomain already exists
+  const { data: existingSeller } = await supabase
+    .from('sellers')
+    .select('id')
+    .eq('subdomain', cleanSubdomain)
+    .maybeSingle();
+
+  if (existingSeller) {
+    return NextResponse.json({ error: 'Subdomain already exists' }, { status: 400 });
+  }
+
   const { data, error } = await supabase.from('sellers').insert({
     name: body.name,
-    subdomain: body.subdomain,
-    custom_domain: body.custom_domain ?? null,
-    logo_url: body.logo_url ?? null,
-    colors: body.colors ?? null,
-    phrases: body.phrases ?? null,
-    payment_provider: body.payment_provider ?? 'stripe',
-    email_provider: body.email_provider ?? 'resend',
+    subdomain: cleanSubdomain,
+    custom_domain: body.custom_domain || null,
+    logo_url: body.logo_url || null,
+    colors: body.colors || null,
+    phrases: Array.isArray(body.phrases) ? body.phrases.filter((p: string) => p.trim() !== '') : null,
+    payment_provider: body.payment_provider || 'stripe',
+    email_provider: body.email_provider || 'resend',
   }).select('*').single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
   // Generate default products for the seller
@@ -55,7 +79,7 @@ export async function POST(req: NextRequest) {
   try {
     const resend = new ResendProvider(process.env.RESEND_API_KEY!);
     await resend.send({
-      to: body.contact_email || 'hoang@catapult.com',
+      to: body.contact_email,
       subject: `🎉 Welcome to MISKRE - Your Store "${data.name}" is Live!`,
       html: generateLaunchKitEmail(data),
     });

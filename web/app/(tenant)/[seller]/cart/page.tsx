@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { trackEvent } from '@/lib/analytics';
 
 type CartItem = {
@@ -21,6 +22,7 @@ type CartPageProps = {
 
 export default function CartPage({ params }: CartPageProps) {
   const [seller, setSeller] = useState<string>('');
+  const [sellerData, setSellerData] = useState<any>(null);
   const [sellerId, setSellerId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -30,11 +32,12 @@ export default function CartPage({ params }: CartPageProps) {
     params.then(async ({ seller: sub }) => {
       setSeller(sub);
 
-      // Fetch seller ID from subdomain
+      // Fetch seller data from subdomain
       try {
         const response = await fetch(`/api/sellers?subdomain=${sub}`);
         if (response.ok) {
           const data = await response.json();
+          setSellerData(data.seller);
           setSellerId(data.seller?.id || '');
         }
       } catch (error) {
@@ -142,27 +145,46 @@ export default function CartPage({ params }: CartPageProps) {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Header storeName={seller} subdomain={seller} />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold mb-4">Your Cart</h1>
-            <p className="text-zinc-600 mb-8">Your cart is empty</p>
-            <Button onClick={() => window.history.back()}>
-              Continue Shopping
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <ThemeProvider seller={sellerData}>
+        <div className="min-h-screen flex flex-col">
+          <Header storeName={sellerData?.name || seller} subdomain={seller} seller={sellerData} />
+          <main className="flex-1 container mx-auto px-4 py-8">
+            <div className="text-center py-12">
+              <h1
+                className="text-3xl font-bold mb-4"
+                style={{ color: sellerData?.colors?.primary || '#111827' }}
+              >
+                Your Cart
+              </h1>
+              <p className="text-zinc-600 mb-8">Your cart is empty</p>
+              <Button
+                onClick={() => window.history.back()}
+                style={{
+                  backgroundColor: sellerData?.colors?.accent || '#ef4444',
+                  borderColor: sellerData?.colors?.accent || '#ef4444'
+                }}
+              >
+                Continue Shopping
+              </Button>
+            </div>
+          </main>
+          <Footer seller={sellerData} />
+        </div>
+      </ThemeProvider>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header storeName={seller} subdomain={seller} />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
+    <ThemeProvider seller={sellerData}>
+      <div className="min-h-screen flex flex-col">
+        <Header storeName={sellerData?.name || seller} subdomain={seller} seller={sellerData} />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <h1
+            className="text-3xl font-bold mb-8"
+            style={{ color: sellerData?.colors?.primary || '#111827' }}
+          >
+            Your Cart
+          </h1>
         
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
@@ -278,7 +300,8 @@ export default function CartPage({ params }: CartPageProps) {
           </div>
         </div>
       </main>
-      <Footer />
+      <Footer seller={sellerData} />
     </div>
+    </ThemeProvider>
   );
 }

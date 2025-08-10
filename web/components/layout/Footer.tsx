@@ -1,10 +1,23 @@
-export function Footer() {
+interface FooterProps {
+  seller?: any;
+}
+
+export function Footer({ seller }: FooterProps = {}) {
+  const footerStyle = seller?.colors?.secondary ? {
+    backgroundColor: seller.colors.secondary,
+    borderTopColor: seller.colors.primary ? `${seller.colors.primary}20` : '#e4e4e7'
+  } : {};
+
+  const headingStyle = seller?.colors?.primary ? {
+    color: seller.colors.primary
+  } : {};
+
   return (
-    <footer className="border-t border-zinc-200 bg-zinc-50 mt-12">
+    <footer className="border-t bg-zinc-50 mt-12" style={footerStyle}>
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
-            <h3 className="font-semibold mb-2">Support</h3>
+            <h3 className="font-semibold mb-2" style={headingStyle}>Support</h3>
             <div className="space-y-1 text-zinc-600">
               <div>Size Chart</div>
               <div>Shipping & Returns</div>
@@ -12,7 +25,7 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Policies</h3>
+            <h3 className="font-semibold mb-2" style={headingStyle}>Policies</h3>
             <div className="space-y-1 text-zinc-600">
               <div>Return Policy</div>
               <div>Privacy Policy</div>
@@ -20,7 +33,7 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">Connect</h3>
+            <h3 className="font-semibold mb-2" style={headingStyle}>Connect</h3>
             <div className="space-y-1 text-zinc-600">
               <div>Instagram</div>
               <div>YouTube</div>
@@ -29,7 +42,11 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-6 pt-6 border-t border-zinc-200 text-center text-xs text-zinc-500">
-          © 2025 MISKRE. All rights reserved.
+          {seller?.name ? (
+            <>© 2025 {seller.name} • Powered by MISKRЕ</>
+          ) : (
+            <>© 2025 MISKRЕ. All rights reserved.</>
+          )}
         </div>
       </div>
     </footer>

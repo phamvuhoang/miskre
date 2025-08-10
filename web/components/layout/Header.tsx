@@ -6,9 +6,10 @@ import { CartManager } from '@/lib/cart';
 type Props = {
   storeName?: string;
   subdomain?: string;
+  seller?: any;
 };
 
-export function Header({ storeName, subdomain }: Props) {
+export function Header({ storeName, subdomain, seller }: Props) {
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
@@ -33,26 +34,64 @@ export function Header({ storeName, subdomain }: Props) {
     }
   }, [subdomain]);
 
+  const headerStyle = seller?.colors?.secondary ? {
+    backgroundColor: seller.colors.secondary,
+    borderBottomColor: seller.colors.primary ? `${seller.colors.primary}20` : '#e4e4e7'
+  } : {};
+
+  const logoTextStyle = seller?.colors?.primary ? {
+    color: seller.colors.primary
+  } : {};
+
+  const cartBadgeStyle = seller?.colors?.accent ? {
+    backgroundColor: seller.colors.accent
+  } : {};
+
   return (
-    <header className="border-b border-zinc-200 bg-white">
+    <header className="border-b bg-white" style={headerStyle}>
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href={subdomain ? `/${subdomain}` : '/'} className="text-xl font-bold">
-          {storeName || 'MISKRE'}
+        <Link
+          href={subdomain ? `/${subdomain}` : '/'}
+          className="flex items-center space-x-3"
+        >
+          {seller?.logo_url && (
+            <img
+              src={seller.logo_url}
+              alt={`${seller.name} logo`}
+              className="w-8 h-8 object-contain"
+            />
+          )}
+          <span className="text-xl font-bold" style={logoTextStyle}>
+            {storeName || 'MISKRE'}
+          </span>
         </Link>
         <nav className="flex items-center space-x-6">
-          <Link href={subdomain ? `/${subdomain}` : '/'} className="text-sm hover:text-zinc-600">
+          <Link
+            href={subdomain ? `/${subdomain}` : '/'}
+            className="text-sm hover:opacity-70 transition-opacity"
+            style={logoTextStyle}
+          >
             Store
           </Link>
-          <Link href="#" className="text-sm hover:text-zinc-600">
+          <Link
+            href="#"
+            className="text-sm hover:opacity-70 transition-opacity"
+            style={logoTextStyle}
+          >
             About
           </Link>
-          <Link href="#" className="text-sm hover:text-zinc-600">
+          <Link
+            href="#"
+            className="text-sm hover:opacity-70 transition-opacity"
+            style={logoTextStyle}
+          >
             FAQ
           </Link>
           {subdomain && (
             <Link
               href={`/${subdomain}/cart`}
-              className="relative text-sm hover:text-zinc-600 flex items-center"
+              className="relative text-sm hover:opacity-70 transition-opacity flex items-center"
+              style={logoTextStyle}
             >
               <svg
                 className="w-5 h-5"
@@ -68,7 +107,10 @@ export function Header({ storeName, subdomain }: Props) {
                 />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span
+                  className="absolute -top-2 -right-2 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                  style={cartBadgeStyle}
+                >
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
               )}
