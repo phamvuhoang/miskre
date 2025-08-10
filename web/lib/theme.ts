@@ -66,31 +66,26 @@ function hexToRgb(hex: string): string {
 /**
  * Get Tailwind classes for seller theme colors
  */
-export function getThemeClasses(seller: SellerData) {
-  const colors = seller.colors || {
-    primary: '#000000',
-    secondary: '#ffffff',
-    accent: '#ef4444'
-  };
-
+export function getThemeClasses() {
+  // Use CSS variables so classes are static and compatible with Tailwind v4
   return {
     primary: {
-      bg: `bg-[${colors.primary}]`,
-      text: `text-[${colors.primary}]`,
-      border: `border-[${colors.primary}]`,
-      hover: `hover:bg-[${colors.primary}]`,
+      bg: 'bg-[var(--seller-primary)]',
+      text: 'text-[var(--seller-primary)]',
+      border: 'border-[var(--seller-primary)]',
+      hover: 'hover:bg-[var(--seller-primary)]',
     },
     secondary: {
-      bg: `bg-[${colors.secondary}]`,
-      text: `text-[${colors.secondary}]`,
-      border: `border-[${colors.secondary}]`,
-      hover: `hover:bg-[${colors.secondary}]`,
+      bg: 'bg-[var(--seller-secondary)]',
+      text: 'text-[var(--seller-secondary)]',
+      border: 'border-[var(--seller-secondary)]',
+      hover: 'hover:bg-[var(--seller-secondary)]',
     },
     accent: {
-      bg: `bg-[${colors.accent}]`,
-      text: `text-[${colors.accent}]`,
-      border: `border-[${colors.accent}]`,
-      hover: `hover:bg-[${colors.accent}]`,
+      bg: 'bg-[var(--seller-accent)]',
+      text: 'text-[var(--seller-accent)]',
+      border: 'border-[var(--seller-accent)]',
+      hover: 'hover:bg-[var(--seller-accent)]',
     }
   };
 }
@@ -133,7 +128,7 @@ export function createSellerTheme(seller: SellerData): SellerTheme & {
     colors,
     logo_url: seller.logo_url,
     phrases: seller.phrases,
-    classes: getThemeClasses(seller),
+    classes: getThemeClasses(),
     css: generateThemeCSS(seller),
     contrastColors: {
       primary: getContrastColor(colors.primary),

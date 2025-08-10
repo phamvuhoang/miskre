@@ -35,14 +35,14 @@ export function Header({ storeName, subdomain, seller }: Props) {
     }
   }, [subdomain]);
 
-  const headerStyle = seller?.colors?.secondary ? {
-    backgroundColor: seller.colors.secondary,
-    borderBottomColor: seller.colors.primary ? `${seller.colors.primary}20` : '#e4e4e7'
-  } : {};
+  const headerStyle = {
+    backgroundColor: 'var(--seller-secondary, #ffffff)',
+    borderBottomColor: 'rgba(var(--seller-primary-rgb, 17,24,39), 0.12)'
+  } as React.CSSProperties;
 
-  const logoTextStyle = seller?.colors?.primary ? {
-    color: seller.colors.primary
-  } : {};
+  const logoTextStyle = {
+    color: 'var(--seller-primary, #111827)'
+  } as React.CSSProperties;
 
   return (
     <header className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm" style={headerStyle}>

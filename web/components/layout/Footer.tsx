@@ -3,14 +3,14 @@ interface FooterProps {
 }
 
 export function Footer({ seller }: FooterProps = {}) {
-  const footerStyle = seller?.colors?.secondary ? {
-    backgroundColor: seller.colors.secondary,
-    borderTopColor: seller.colors.primary ? `${seller.colors.primary}20` : '#e4e4e7'
-  } : {};
+  const footerStyle = {
+    backgroundColor: 'var(--seller-secondary, #ffffff)',
+    borderTopColor: 'rgba(var(--seller-primary-rgb, 17,24,39), 0.12)'
+  } as React.CSSProperties;
 
-  const headingStyle = seller?.colors?.primary ? {
-    color: seller.colors.primary
-  } : {};
+  const headingStyle = {
+    color: 'var(--seller-primary, #111827)'
+  } as React.CSSProperties;
 
   return (
     <footer className="border-t bg-zinc-50 mt-12" style={footerStyle}>
