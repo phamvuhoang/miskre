@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
+import { ResendProvider } from '@/lib/providers/email';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -15,6 +16,17 @@ export async function POST(req: NextRequest) {
     email_provider: body.email_provider ?? 'resend',
   }).select('*').single();
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+  // Welcome email (best effort)
+  try {
+    const resend = new ResendProvider(process.env.RESEND_API_KEY!);
+    await resend.send({
+      to: body.contact_email || 'founders@miskre.com',
+      subject: `Welcome ${body.name} - Your MISKRE Store Setup`,
+      html: `<p>Your store ${body.subdomain}.miskre.com is being set up. We'll notify you when live.</p>`,
+    });
+  } catch {}
+
   return NextResponse.json({ seller: data });
 }
 
