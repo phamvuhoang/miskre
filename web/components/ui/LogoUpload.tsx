@@ -80,6 +80,7 @@ export function LogoUpload({ onUpload, currentImage, className = "w-32 h-32" }: 
       {currentImage ? (
         <div className="relative group">
           <div className={`${className} bg-zinc-100 rounded-lg overflow-hidden border-2 border-zinc-200`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentImage}
               alt="Logo preview"

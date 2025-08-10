@@ -28,10 +28,20 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
     );
   }
 
-  // Get all orders for this seller
+  // Get all orders for this seller with order items
   const { data: orders } = await supabase
     .from('orders')
-    .select('*')
+    .select(`
+      *,
+      order_items (
+        id,
+        product_name,
+        size,
+        quantity,
+        unit_price,
+        total_price
+      )
+    `)
     .eq('seller_id', seller.id)
     .order('created_at', { ascending: false });
 
@@ -66,23 +76,23 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
           
           <Card className="p-4">
             <div className="text-lg font-bold text-orange-600">
-              {orders?.filter(o => o.status === 'pending').length || 0}
+              {orders?.filter(o => ['pending', 'confirmed'].includes(o.status)).length || 0}
             </div>
             <div className="text-sm text-zinc-600">Pending</div>
           </Card>
-          
+
           <Card className="p-4">
             <div className="text-lg font-bold text-green-600">
-              {orders?.filter(o => o.status === 'shipped').length || 0}
+              {orders?.filter(o => ['shipped', 'delivered'].includes(o.status)).length || 0}
             </div>
             <div className="text-sm text-zinc-600">Shipped</div>
           </Card>
-          
+
           <Card className="p-4">
             <div className="text-lg font-bold text-red-600">
-              {orders?.filter(o => o.status === 'returned').length || 0}
+              {orders?.filter(o => ['cancelled', 'returned'].includes(o.status)).length || 0}
             </div>
-            <div className="text-sm text-zinc-600">Returned</div>
+            <div className="text-sm text-zinc-600">Issues</div>
           </Card>
         </div>
 
@@ -97,9 +107,9 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
               <table className="w-full">
                 <thead className="bg-zinc-50">
                   <tr>
-                    <th className="text-left p-4 font-medium text-zinc-600">Order ID</th>
+                    <th className="text-left p-4 font-medium text-zinc-600">Order</th>
                     <th className="text-left p-4 font-medium text-zinc-600">Date</th>
-                    <th className="text-left p-4 font-medium text-zinc-600">Customer</th>
+                    <th className="text-left p-4 font-medium text-zinc-600">Items</th>
                     <th className="text-left p-4 font-medium text-zinc-600">Payment</th>
                     <th className="text-left p-4 font-medium text-zinc-600">Total</th>
                     <th className="text-left p-4 font-medium text-zinc-600">Status</th>
@@ -110,8 +120,11 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
                   {orders.map((order) => (
                     <tr key={order.id} className="border-b border-zinc-100 hover:bg-zinc-50">
                       <td className="p-4">
-                        <div className="font-mono text-sm">
-                          #{order.id.slice(0, 8)}
+                        <div className="font-mono text-sm font-bold">
+                          {order.order_number || `#${order.id.slice(0, 8)}`}
+                        </div>
+                        <div className="text-xs text-zinc-500">
+                          ID: {order.id.slice(0, 8)}
                         </div>
                       </td>
                       <td className="p-4">
@@ -124,20 +137,37 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
                       </td>
                       <td className="p-4">
                         <div className="text-sm">
-                          {order.customer_email_enc ? 
-                            order.customer_email_enc.slice(0, 20) + '...' : 
-                            'No email'
-                          }
+                          {order.order_items && order.order_items.length > 0 ? (
+                            <div>
+                              <div className="font-medium">
+                                {order.order_items.length} item{order.order_items.length !== 1 ? 's' : ''}
+                              </div>
+                              <div className="text-xs text-zinc-500 max-w-32 truncate">
+                                {order.order_items.map((item: {
+                                  product_name: string;
+                                  size?: string;
+                                  quantity: number;
+                                }) =>
+                                  `${item.product_name}${item.size ? ` (${item.size})` : ''} x${item.quantity}`
+                                ).join(', ')}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-zinc-400">No items</span>
+                          )}
                         </div>
                       </td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          order.payment_method === 'stripe' 
+                          order.payment_method === 'stripe'
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-green-100 text-green-800'
                         }`}>
                           {order.payment_method.toUpperCase()}
                         </span>
+                        <div className="text-xs text-zinc-500 mt-1">
+                          {order.payment_status || 'pending'}
+                        </div>
                       </td>
                       <td className="p-4">
                         <div className="font-bold">
@@ -147,8 +177,12 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-medium ${
                           order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                          order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                          order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
                           order.status === 'shipped' ? 'bg-green-100 text-green-800' :
-                          order.status === 'returned' ? 'bg-red-100 text-red-800' :
+                          order.status === 'delivered' ? 'bg-green-200 text-green-900' :
+                          order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          order.status === 'returned' ? 'bg-red-200 text-red-900' :
                           'bg-zinc-100 text-zinc-800'
                         }`}>
                           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}

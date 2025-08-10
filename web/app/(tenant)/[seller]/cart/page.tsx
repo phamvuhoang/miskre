@@ -93,41 +93,56 @@ export default function CartPage({ params }: CartPageProps) {
     });
 
     try {
+      // Convert cart items to order items format
+      const orderItems = cartItems.map(item => ({
+        product_id: item.id,
+        product_name: item.name,
+        product_description: '', // Could be enhanced to include description
+        product_image_url: item.image_urls?.[0] || '',
+        size: item.size,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total_price: item.price * item.quantity,
+      }));
+
+      const orderData = {
+        seller_id: sellerId,
+        customer_email: email || undefined,
+        payment_method: paymentMethod,
+        items: orderItems,
+        subtotal: total,
+        shipping_cost: 0, // Could be calculated based on shipping rules
+        tax_amount: 0, // Could be calculated based on location
+        discount_amount: 0,
+        total,
+      };
+
       if (paymentMethod === 'cod') {
         // Handle COD checkout
         const response = await fetch('/api/checkout/cod', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            seller_id: sellerId,
-            total,
-            customer_email: email || undefined,
-            items: cartItems,
-          }),
+          body: JSON.stringify(orderData),
         });
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Failed to place order');
 
-        trackEvent('purchase', { 
-          seller: seller, 
-          total, 
+        trackEvent('purchase', {
+          seller: seller,
+          total,
           payment_method: 'cod',
-          order_id: data.order.id 
+          order_id: data.order.id
         });
 
-        alert(`Order placed successfully! Order ID: ${data.order.id}`);
+        alert(`Order placed successfully! Order Number: ${data.order.order_number}`);
         clearCart();
       } else {
         // Handle Stripe checkout
         const response = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sellerId: sellerId,
-            amount: total,
-            items: cartItems,
-          }),
+          body: JSON.stringify(orderData),
         });
 
         const data = await response.json();

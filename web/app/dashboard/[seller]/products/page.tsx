@@ -2,6 +2,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type ProductsPageProps = {
   params: Promise<{ seller: string }>;
@@ -92,7 +93,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
               <Card key={product.id} className="overflow-hidden">
                 <div className="aspect-square bg-zinc-100 relative">
                   {product.image_urls && product.image_urls.length > 0 ? (
-                    <img
+                    <Image
                       src={product.image_urls[0]}
                       alt={product.name}
                       className="w-full h-full object-cover"

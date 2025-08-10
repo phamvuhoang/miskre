@@ -34,9 +34,11 @@ export class StripeProvider implements PaymentProvider {
   }
 }
 export class CODProvider implements PaymentProvider {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createCheckoutSession(_p: CheckoutPayload): Promise<{ id: string; url?: string }> {
     return { id: `cod_${Date.now()}` };
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async processPayout(_p: PayoutPayload): Promise<{ status: 'pending' | 'completed' }> {
     return { status: 'pending' };
   }

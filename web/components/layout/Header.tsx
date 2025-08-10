@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { CartManager } from '@/lib/cart';
 
@@ -43,48 +44,52 @@ export function Header({ storeName, subdomain, seller }: Props) {
     color: seller.colors.primary
   } : {};
 
-  const cartBadgeStyle = seller?.colors?.accent ? {
-    backgroundColor: seller.colors.accent
-  } : {};
-
   return (
-    <header className="border-b bg-white" style={headerStyle}>
+    <header className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm" style={headerStyle}>
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           href={subdomain ? `/${subdomain}` : '/'}
-          className="flex items-center space-x-3"
+          className="flex items-center space-x-3 group focus:outline-none focus:ring-4 focus:ring-offset-2 rounded-lg"
+          style={{ '--tw-ring-color': seller?.colors?.primary || '#111827' } as React.CSSProperties}
         >
           {seller?.logo_url && (
-            <img
-              src={seller.logo_url}
-              alt={`${seller?.name ?? 'Store'} logo`}
-              className="w-8 h-8 object-contain"
-              width={32}
-              height={32}
-            />
+            <div className="relative">
+              <Image
+                src={seller.logo_url}
+                alt={`${seller?.name ?? 'Store'} logo`}
+                className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-200"
+                width={40}
+                height={40}
+              />
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-200"
+                style={{ backgroundColor: seller?.colors?.accent || '#ef4444' }}
+              ></div>
+            </div>
           )}
-          <span className="text-xl font-bold" style={logoTextStyle}>
+          <span className="text-2xl font-black tracking-tight group-hover:opacity-80 transition-opacity" style={logoTextStyle}>
             {storeName || 'MISKRE'}
           </span>
         </Link>
-        <nav className="flex items-center space-x-6">
+
+        <nav className="flex items-center space-x-8">
           <Link
             href={subdomain ? `/${subdomain}` : '/'}
-            className="text-sm hover:opacity-70 transition-opacity"
+            className="text-sm font-bold hover:opacity-70 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1"
             style={logoTextStyle}
           >
             Store
           </Link>
           <Link
             href="#"
-            className="text-sm hover:opacity-70 transition-opacity"
+            className="text-sm font-bold hover:opacity-70 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1"
             style={logoTextStyle}
           >
             About
           </Link>
           <Link
             href="#"
-            className="text-sm hover:opacity-70 transition-opacity"
+            className="text-sm font-bold hover:opacity-70 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1"
             style={logoTextStyle}
           >
             FAQ
@@ -92,11 +97,16 @@ export function Header({ storeName, subdomain, seller }: Props) {
           {subdomain && (
             <Link
               href={`/${subdomain}/cart`}
-              className="relative text-sm hover:opacity-70 transition-opacity flex items-center"
-              style={logoTextStyle}
+              className="relative group flex items-center justify-center w-12 h-12 rounded-full transition-all duration-200 hover:scale-110 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-offset-2"
+              style={{
+                backgroundColor: seller?.colors?.accent ? `${seller.colors.accent}15` : '#fef2f2',
+                '--tw-ring-color': seller?.colors?.accent || '#ef4444'
+              } as React.CSSProperties}
+              aria-label={`Shopping cart with ${cartCount} items`}
             >
               <svg
-                className="w-5 h-5"
+                className="w-6 h-6 group-hover:scale-110 transition-transform duration-200"
+                style={{ color: seller?.colors?.accent || '#ef4444' }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -105,13 +115,13 @@ export function Header({ storeName, subdomain, seller }: Props) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 11-4 0v-6m4 0V9a2 2 0 10-4 0v4.01"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 7H6L5 9z"
                 />
               </svg>
               {cartCount > 0 && (
                 <span
-                  className="absolute -top-2 -right-2 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-                  style={cartBadgeStyle}
+                  className="absolute -top-1 -right-1 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg animate-pulse"
+                  style={{ backgroundColor: seller?.colors?.accent || '#ef4444' }}
                 >
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>

@@ -2,6 +2,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type DashboardProps = {
   params: Promise<{ seller: string }>;
@@ -27,10 +28,19 @@ export default async function SellerDashboard({ params }: DashboardProps) {
     );
   }
 
-  // Get orders for this seller
+  // Get orders for this seller with order items
   const { data: orders } = await supabase
     .from('orders')
-    .select('*')
+    .select(`
+      *,
+      order_items (
+        id,
+        product_name,
+        quantity,
+        unit_price,
+        total_price
+      )
+    `)
     .eq('seller_id', seller.id)
     .order('created_at', { ascending: false });
 
@@ -104,17 +114,27 @@ export default async function SellerDashboard({ params }: DashboardProps) {
                 {orders.slice(0, 5).map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-3 bg-zinc-50 rounded">
                     <div>
-                      <div className="font-medium">Order #{order.id.slice(0, 8)}</div>
+                      <div className="font-medium">{order.order_number || `Order #${order.id.slice(0, 8)}`}</div>
                       <div className="text-sm text-zinc-600">
                         {new Date(order.created_at).toLocaleDateString()}
                       </div>
+                      {order.order_items && order.order_items.length > 0 && (
+                        <div className="text-xs text-zinc-500 mt-1">
+                          {order.order_items.length} item{order.order_items.length !== 1 ? 's' : ''}
+                        </div>
+                      )}
                     </div>
                     <div className="text-right">
                       <div className="font-bold">${Number(order.total).toFixed(2)}</div>
                       <div className={`text-sm px-2 py-1 rounded text-white ${
                         order.status === 'pending' ? 'bg-orange-500' :
+                        order.status === 'confirmed' ? 'bg-blue-500' :
+                        order.status === 'processing' ? 'bg-yellow-500' :
                         order.status === 'shipped' ? 'bg-green-500' :
-                        'bg-red-500'
+                        order.status === 'delivered' ? 'bg-green-600' :
+                        order.status === 'cancelled' ? 'bg-red-500' :
+                        order.status === 'returned' ? 'bg-red-600' :
+                        'bg-gray-500'
                       }`}>
                         {order.status}
                       </div>
@@ -140,7 +160,7 @@ export default async function SellerDashboard({ params }: DashboardProps) {
                   <div key={product.id} className="flex items-center gap-3 p-3 bg-zinc-50 rounded">
                     <div className="w-12 h-12 bg-zinc-200 rounded overflow-hidden flex-shrink-0">
                       {product.image_urls?.[0] ? (
-                        <img
+                        <Image
                           src={product.image_urls[0]}
                           alt={product.name}
                           className="w-full h-full object-cover"

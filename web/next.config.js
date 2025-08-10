@@ -12,7 +12,14 @@ const nextConfig = {
   },
   images: {
     // Allow images from your Supabase storage bucket domain
-    domains: supabaseHost ? [supabaseHost] : [],
+    remotePatterns: supabaseHost ? [
+      {
+        protocol: 'https',
+        hostname: supabaseHost,
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ] : [],
   },
 };
 module.exports = nextConfig;

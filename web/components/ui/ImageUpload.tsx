@@ -159,6 +159,7 @@ export function ImageUpload({
           {currentImages.map((imageUrl, index) => (
             <div key={index} className="relative group">
               <div className="aspect-square bg-zinc-100 rounded-lg overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imageUrl}
                   alt={`Product image ${index + 1}`}

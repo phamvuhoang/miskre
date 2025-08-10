@@ -6,7 +6,7 @@ export function OrderActions({ orderId, status }: { orderId: string; status: str
   const [loading, setLoading] = useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = useState(status);
 
-  async function updateStatus(next: 'shipped' | 'returned' | 'pending') {
+  async function updateStatus(next: 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned') {
     setLoading(next);
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
@@ -28,16 +28,36 @@ export function OrderActions({ orderId, status }: { orderId: string; status: str
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-1">
       {currentStatus === 'pending' && (
-        <Button size="sm" variant="outline" onClick={() => updateStatus('shipped')} disabled={loading !== null}>
-          {loading === 'shipped' ? 'Updating…' : 'Mark Shipped'}
+        <Button size="sm" variant="outline" onClick={() => updateStatus('confirmed')} disabled={loading !== null}>
+          {loading === 'confirmed' ? 'Updating…' : 'Confirm'}
         </Button>
       )}
-      {currentStatus !== 'returned' && (
-        <Button size="sm" variant="ghost" onClick={() => updateStatus('returned')} disabled={loading !== null}>
-          {loading === 'returned' ? 'Updating…' : 'Mark Returned'}
+      {currentStatus === 'confirmed' && (
+        <Button size="sm" variant="outline" onClick={() => updateStatus('processing')} disabled={loading !== null}>
+          {loading === 'processing' ? 'Updating…' : 'Process'}
         </Button>
+      )}
+      {currentStatus === 'processing' && (
+        <Button size="sm" variant="outline" onClick={() => updateStatus('shipped')} disabled={loading !== null}>
+          {loading === 'shipped' ? 'Updating…' : 'Ship'}
+        </Button>
+      )}
+      {currentStatus === 'shipped' && (
+        <Button size="sm" variant="outline" onClick={() => updateStatus('delivered')} disabled={loading !== null}>
+          {loading === 'delivered' ? 'Updating…' : 'Delivered'}
+        </Button>
+      )}
+      {!['cancelled', 'returned', 'delivered'].includes(currentStatus) && (
+        <>
+          <Button size="sm" variant="ghost" onClick={() => updateStatus('cancelled')} disabled={loading !== null}>
+            {loading === 'cancelled' ? 'Updating…' : 'Cancel'}
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => updateStatus('returned')} disabled={loading !== null}>
+            {loading === 'returned' ? 'Updating…' : 'Return'}
+          </Button>
+        </>
       )}
     </div>
   );
