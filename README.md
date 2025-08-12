@@ -303,8 +303,4 @@ npm run typecheck
 ```
 
 This will run the TypeScript compiler to check for any type errors.
-npm run typecheck
-```
-
-This will run the TypeScript compiler to check for any type errors.
 
